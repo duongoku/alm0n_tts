@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+tts.mp3
+prefixes.db
