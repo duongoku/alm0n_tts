@@ -26,8 +26,7 @@ const client = new Client({
 const tts = new textToSpeech.TextToSpeechClient({keyFilename});
 
 let defaultPrefix = '"';
-
-const player = createAudioPlayer();
+const players_map = new Map();
 
 function is_playing(player) {
     if (player.state.status == AudioPlayerStatus.Playing ||
@@ -46,11 +45,10 @@ async function get_tts_audio(text) {
     };
 
     const [response] = await tts.synthesizeSpeech(request);
-    console.log();
     return response.audioContent;
 }
 
-async function playTTS(message, text) {
+async function playTTS(message, text, player) {
 	const resource = createAudioResource(get_tts_audio(text), {
 		inputType: StreamType.Arbitrary,
 	});
@@ -65,7 +63,7 @@ async function playTTS(message, text) {
 	return entersState(player, AudioPlayerStatus.Playing, 10e3);
 }
 
-async function connectToChannel(channel) {
+async function connectToChannel(channel, player) {
     if (is_playing(player)) {
         return false;
     }
@@ -113,16 +111,21 @@ client.on('messageCreate', async (message) => {
 
     if (args[0].toLowerCase() === 'tts') {
         const channel = message.member?.voice.channel;
-        const sentence = args.slice(1).join(' ')
+        const text = args.slice(1).join(' ');
+
+        if(!players_map.get(message.guildId)) {
+            players_map.set(message.guildId, createAudioPlayer());
+        }
 
         if (channel) {
+            var player = players_map.get(message.guildId);
             try {
-                const connection = await connectToChannel(channel);
+                const connection = await connectToChannel(channel, player);
                 if (!connection) {
-                    await playTTS(message, sentence);
+                    await playTTS(message, text, player);
                 } else {
                     connection.subscribe(player);
-                    await playTTS(message, sentence);
+                    await playTTS(message, text, player);
                 }
             } catch (error) {
                 console.error(error);
@@ -138,5 +141,9 @@ client.on('messageCreate', async (message) => {
 client.login(token);
 
 process.on('SIGINT', () => {
+    client.destroy();
+});
+
+process.on('exit', () => {
     client.destroy();
 });
