@@ -29,7 +29,16 @@ let defaultPrefix = '"';
 
 const player = createAudioPlayer();
 
-async function create_tts_audio(text) {
+function is_playing(player) {
+    if (player.state.status == AudioPlayerStatus.Playing ||
+        player.state.status == AudioPlayerStatus.Buffering) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+async function get_tts_audio(text) {
     const request = {
         input: {text: text},
         voice: {languageCode: 'vi-VN', ssmlGender: 'NEUTRAL'},
@@ -37,36 +46,28 @@ async function create_tts_audio(text) {
     };
 
     const [response] = await tts.synthesizeSpeech(request);
-    const writeFile = util.promisify(fs.writeFile);
-    await writeFile('tts.mp3', response.audioContent, 'binary');
-    console.log('Audio content written to file: tts.mp3');
-  }
+    console.log();
+    return response.audioContent;
+}
 
-function playTTS(message) {
-    if (player.state.status == AudioPlayerStatus.Playing) {
+async function playTTS(message, text) {
+	const resource = createAudioResource(get_tts_audio(text), {
+		inputType: StreamType.Arbitrary,
+	});
+
+    if (is_playing(player)) {
         message.reply('Wait for the previous tts to finish first!');
         return false;
     }
 
-	const resource = createAudioResource('./tts.mp3', {
-		inputType: StreamType.Arbitrary,
-	});
-
 	player.play(resource);
 
-	return entersState(player, AudioPlayerStatus.Playing, 5e3);
+	return entersState(player, AudioPlayerStatus.Playing, 10e3);
 }
 
 async function connectToChannel(channel) {
-    var check = false;
-    channel.members.each(member => {
-        if (member.user == client.user) {
-            check = true;
-        }
-    });
-
-    if (check) {
-        return null;
+    if (is_playing(player)) {
+        return false;
     }
 
 	const connection = joinVoiceChannel({
@@ -118,12 +119,10 @@ client.on('messageCreate', async (message) => {
             try {
                 const connection = await connectToChannel(channel);
                 if (!connection) {
-                    await create_tts_audio(sentence);
-                    playTTS(message);
+                    await playTTS(message, sentence);
                 } else {
                     connection.subscribe(player);
-                    await create_tts_audio(sentence);
-                    playTTS(message);
+                    await playTTS(message, sentence);
                 }
             } catch (error) {
                 console.error(error);
