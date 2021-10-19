@@ -41,7 +41,7 @@ async function get_tts_audio(text) {
     const request = {
         input: {text: text},
         voice: {languageCode: 'vi-VN', ssmlGender: 'NEUTRAL'},
-        audioConfig: {audioEncoding: 'MP3'},
+        audioConfig: {audioEncoding: 'MP3', speakingRate: 0.75},
     };
 
     const [response] = await tts.synthesizeSpeech(request);
