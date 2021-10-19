@@ -1,4 +1,4 @@
-# p1nto_tts_js
+# alm0n_tts_js
 A Discord bot for TTS
 
 Before you begin:
@@ -9,9 +9,9 @@ Before you begin:
 
 Then clone this repository
 ```
-git clone https://github.com/duongoku/p1nto_tts_js.git
+git clone https://github.com/duongoku/alm0n_tts_js.git
 
-cd p1nto_tts_js
+cd alm0n_tts_js
 ```
 Then
 ```

@@ -84,7 +84,7 @@ async function connectToChannel(channel, player) {
 }
 
 client.once('ready', () => {
-    console.log('p1nto_tts is online!');
+    console.log('alm0n_tts is online!');
 })
 
 client.on('messageCreate', async (message) => {
