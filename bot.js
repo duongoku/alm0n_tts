@@ -105,11 +105,11 @@ client.on('messageCreate', async (message) => {
     }
 
     if (args[0].toLowerCase() === 'help') {
-        return message.reply(`\`Main commands:
+        return message.reply(`Main commands:
             ${prefix}tts: Use text-to-speech(Vietnamese)
             ${prefix}disconnect: Disconnect this bot from current voice channel
             ${prefix}invite: Get this bot's invitation link
-        \``.replace(/  +/g, ''));
+        `.replace(/  +/g, ''));
     }
 
     if (args[0].toLowerCase() === 'disconnect') {
