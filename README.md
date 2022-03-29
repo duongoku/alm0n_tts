@@ -13,11 +13,11 @@ A Discord bot for TTS
 ## Run
 Clone this repository
 ```
-git clone https://github.com/duongoku/alm0n_tts_js.git
+git clone https://github.com/duongoku/alm0n_tts.git
 ```
 And change working directory to this project
 ```
-cd alm0n_tts_js
+cd alm0n_tts
 ```
 Then create an [.env](https://gist.github.com/ericelliott/4152984) file in this directory and fill in those environment variables:
 - TOKEN: Your Discord bot token
