@@ -1,4 +1,4 @@
-# alm0n_tts_js
+# alm0n_tts
 A Discord bot for TTS
 
 ## Table of contents
@@ -30,5 +30,5 @@ npm install
 ```
 Finally, run the bot with
 ```
-node .
+npm start
 ```
