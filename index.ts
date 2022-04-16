@@ -105,10 +105,13 @@ function checkUserCount(
     channel: VoiceBasedChannel,
     connection: VoiceConnection
 ) {
-    let userCount = channel.members.size;
-    console.log(userCount);
+    const userCount = channel.members.size;
     if (userCount < 2) {
-        connection.destroy();
+        try {
+            connection.destroy();
+        } catch (error) {
+            console.log(error);
+        }
     } else {
         setTimeout(() => {
             checkUserCount(channel, connection);
