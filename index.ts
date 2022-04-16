@@ -8,6 +8,7 @@ import {
     AudioPlayer,
     AudioPlayerStatus,
     StreamType,
+    VoiceConnection,
     VoiceConnectionStatus,
     createAudioPlayer,
     createAudioResource,
@@ -100,6 +101,21 @@ async function playTTS(message: Message, text: string, player: AudioPlayer) {
     return entersState(player, AudioPlayerStatus.Playing, 10e3);
 }
 
+function checkUserCount(
+    channel: VoiceBasedChannel,
+    connection: VoiceConnection
+) {
+    let userCount = channel.members.size;
+    console.log(userCount);
+    if (userCount < 2) {
+        connection.destroy();
+    } else {
+        setTimeout(() => {
+            checkUserCount(channel, connection);
+        }, 10e3);
+    }
+}
+
 async function connectToChannel(
     channel: VoiceBasedChannel,
     player: AudioPlayer
@@ -116,6 +132,7 @@ async function connectToChannel(
 
     try {
         await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
+        checkUserCount(channel, connection);
         return connection;
     } catch (error) {
         connection.destroy();
