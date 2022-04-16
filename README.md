@@ -23,6 +23,7 @@ Then create an [.env](https://gist.github.com/ericelliott/4152984) file in this 
 - TOKEN: Your Discord bot token
 - INVITE: Your Discord bot invitation url
 - CREPATH: Path to your google cloud text-to-speech credential ([Click here for more information on how to get this](https://cloud.google.com/text-to-speech/docs/libraries#cloud-console))
+- PREFIX: The prefix for commands
 
 Then install all the packages needed with
 ```
